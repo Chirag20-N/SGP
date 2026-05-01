@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroCast Weather</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animations.css">
+</head>
+<body class="bg-default transition-bg">
+    
+    <div id="loading-spinner" class="spinner-overlay hidden">
+        <div class="loader"></div>
+    </div>
+
+    <header class="glass-header">
+        <div class="logo"><i class="fa-solid fa-cloud-sun-rain"></i> AeroCast</div>
+        <div class="search-box">
+            <input type="text" id="city-input" placeholder="Search city (e.g. London, Tokyo)...">
+            <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <button id="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+    </header>
+
+    <main class="container">
+        <aside class="sidebar">
+            <div class="glass-card mb-2">
+                <h3>⭐ Saved Cities</h3>
+                <ul id="saved-cities-list"></ul>
+            </div>
+            <div class="glass-card">
+                <h3>🕘 Recent Searches</h3>
+                <ul id="recent-searches-list"></ul>
+            </div>
+        </aside>
+
+        <div class="main-weather">
+            <div class="top-row">
+                <div class="glass-card current-weather" id="current-weather-card">
+                    <div class="header-action">
+                        <h2 id="city-name">City, Country</h2>
+                        <button id="save-city-btn"><i class="fa-regular fa-star"></i></button>
+                    </div>
+                    <div class="weather-main-info">
+                        <img id="weather-icon" src="" alt="Weather Icon">
+                        <h1 id="temperature">--°C</h1>
+                        <p id="condition">--</p>
+                    </div>
+                    <div class="weather-details">
+                        <p><i class="fa-solid fa-temperature-half"></i> Feels like: <span id="feels-like">--</span></p>
+                        <p><i class="fa-solid fa-droplet"></i> Humidity: <span id="humidity">--</span></p>
+                        <p><i class="fa-solid fa-wind"></i> Wind: <span id="wind">--</span></p>
+                        <p><i class="fa-solid fa-eye"></i> Visibility: <span id="visibility">--</span></p>
+                    </div>
+                </div>
+
+                <div class="glass-card suggestions-card">
+                    <h3>💡 Smart Suggestions</h3>
+                    <ul id="suggestions-list"></ul>
+                </div>
+            </div>
+
+            <div class="glass-card mt-2">
+                <h3>⏱ 24-Hour Forecast</h3>
+                <div class="hourly-forecast" id="hourly-container"></div>
+            </div>
+
+            <div class="glass-card mt-2">
+                <h3>📅 5-Day Forecast</h3>
+                <div class="daily-forecast" id="daily-container"></div>
+            </div>
+
+            <div class="grid-2 mt-2">
+                <div class="glass-card">
+                    <h3>🕒 Local Time & Sun</h3>
+                    <h2 id="local-time" style="color: #ffeb3b; font-size: 2rem;">--:--</h2>
+                    <div class="sun-grid mt-2">
+                        <p><i class="fa-solid fa-sun" style="color: #fda085;"></i> Sunrise: <span id="sunrise-time">--:--</span></p>
+                        <p><i class="fa-solid fa-moon" style="color: #f6d365;"></i> Sunset: <span id="sunset-time">--:--</span></p>
+                        <p><i class="fa-solid fa-stopwatch"></i> Daylight: <span id="daylight-val">-- hrs</span></p>
+                    </div>
+                </div>
+
+                <div class="glass-card text-center">
+                    <h3>🧭 Wind Direction</h3>
+                    <div class="compass-container">
+                        <div class="compass">
+                            <div class="compass-arrow" id="compass-arrow" style="transition: transform 0.5s ease;">
+                                <i class="fa-solid fa-location-arrow"></i>
+                            </div>
+                        </div>
+                        <p class="mt-2" id="wind-loading-text">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2 mt-2">
+                <div class="glass-card">
+                    <h3>✈️ Travel Weather Planner</h3>
+                    <p class="text-sm mb-2">Check forecast for the next 5 days.</p>
+                    <div class="input-group">
+                        <input type="text" id="travel-city" placeholder="Destination City" class="custom-input">
+                        <input type="date" id="travel-date" class="custom-input">
+                        <button id="travel-check-btn" class="action-btn blue">Check</button>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3>⚖️ Compare Weather</h3>
+                    <div class="input-group">
+                        <input type="text" id="compare-city-1" placeholder="City 1 (e.g. London)" class="custom-input">
+                        <input type="text" id="compare-city-2" placeholder="City 2 (e.g. Tokyo)" class="custom-input">
+                        <button id="compare-btn" class="action-btn orange">Compare</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2 mt-2">
+                <div class="glass-card">
+                    <h3>🌡 Temperature Trend</h3>
+                    <canvas id="tempChart"></canvas>
+                </div>
+                <div class="glass-card">
+                    <h3>🌧 Rain Probability</h3>
+                    <canvas id="rainChart"></canvas>
+                </div>
+                <div class="glass-card">
+                    <h3>🌬 Wind Speed</h3>
+                    <canvas id="windChart"></canvas>
+                </div>
+                <div class="glass-card">
+                    <h3>🌫 Air Quality (<span id="aqi-label">--</span>)</h3>
+                    <p class="text-sm">PM2.5: <span id="pm25">--</span> | PM10: <span id="pm10">--</span></p>
+                    <canvas id="aqiChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-card mt-2 map-container">
+                <h3>🗺 City Map</h3>
+                <div id="map" style="height: 350px;"></div>
+            </div>
+
+            <div class="glass-card mt-2 news-section">
+                <h3>📰 Climate & Weather News</h3>
+                <div class="news-grid" id="news-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

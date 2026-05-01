@@ -1,0 +1,148 @@
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --text-main: #222;
+    --text-muted: #555;
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    --glass-bg: rgba(0, 0, 0, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: #f1f1f1;
+    --text-muted: #bbb;
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+body { color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+/* Dynamic Backgrounds */
+.transition-bg { transition: background 0.8s ease-in-out; }
+.bg-default { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+.bg-sunny { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+.bg-rainy { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.bg-cloudy { background: linear-gradient(135deg, #8e9eab 0%, #eef2f3 100%); }
+.bg-night { background: linear-gradient(135deg, #141e30 0%, #243b55 100%); }
+
+/* Glassmorphism */
+.glass-header { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 1000; }
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 15px; border: 1px solid var(--glass-border); padding: 20px; box-shadow: var(--shadow); transition: transform 0.3s, box-shadow 0.3s; }
+.glass-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+
+/* Header & Search */
+.logo { font-size: 1.5rem; font-weight: bold; }
+.search-box { display: flex; background: rgba(255,255,255,0.3); border-radius: 20px; padding: 5px 15px; }
+.search-box input { border: none; background: transparent; outline: none; padding: 5px; color: var(--text-main); width: 300px; }
+.search-box button, #theme-toggle, .header-action button { background: transparent; border: none; cursor: pointer; color: var(--text-main); font-size: 1.2rem; }
+
+/* Layout */
+.container { display: flex; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+.sidebar { width: 250px; flex-shrink: 0; }
+.main-weather { flex-grow: 1; overflow: hidden; }
+.top-row, .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.mb-2 { margin-bottom: 20px; }
+.mt-2 { margin-top: 20px; }
+
+/* Lists & Text */
+ul { list-style: none; }
+ul li { padding: 8px 0; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
+ul li:hover { padding-left: 10px; transition: 0.3s; color: #ffeb3b; }
+.text-sm { font-size: 0.85rem; color: var(--text-muted); }
+
+/* Weather Card specifics */
+.header-action { display: flex; justify-content: space-between; align-items: center; }
+.weather-main-info { text-align: center; margin: 20px 0; }
+.weather-main-info h1 { font-size: 4rem; }
+.weather-main-info img { width: 100px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3)); }
+.weather-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Horizontal Forecast */
+.hourly-forecast, .daily-forecast { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; }
+.hourly-forecast::-webkit-scrollbar, .daily-forecast::-webkit-scrollbar { height: 8px; }
+.hourly-forecast::-webkit-scrollbar-thumb, .daily-forecast::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+.forecast-item { min-width: 80px; text-align: center; background: rgba(0,0,0,0.05); padding: 15px 10px; border-radius: 10px; }
+[data-theme="dark"] .forecast-item { background: rgba(255,255,255,0.05); }
+
+/* Map & News */
+#map { height: 300px; border-radius: 10px; margin-top: 10px; z-index: 1;}
+.news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+.news-item { display: block; text-decoration: none; color: inherit; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; transition: 0.3s; }
+.news-item:hover { transform: scale(1.02); }
+.news-item img { width: 100%; height: 140px; object-fit: cover; }
+.news-item div { padding: 10px; }
+.news-item h4 { font-size: 1rem; margin-bottom: 5px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; }
+    .top-row, .grid-2 { grid-template-columns: 1fr; }
+    .search-box input { width: 150px; }
+} 
+
+/* Sun Grid */
+.sun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem; }
+
+/* Compass */
+.compass-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
+.compass { width: 100px; height: 100px; border: 4px solid var(--text-main); border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); }
+.compass::before { content: 'N'; position: absolute; top: -20px; font-weight: bold; }
+.compass::after { content: 'S'; position: absolute; bottom: -20px; font-weight: bold; }
+.compass-arrow { font-size: 2.5rem; color: #e74c3c; transition: transform 0.5s ease-in-out; }
+
+/* Utility */
+.text-center { text-align: center; } 
+
+
+
+/* Styling for Inputs and Buttons in Cards */
+.glass-card input[type="text"], 
+.glass-card input[type="date"] {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    color: var(--text-main);
+    outline: none;
+    margin: 5px 0;
+    width: 100%; /* Makes them stack nicely on small screens */
+    transition: 0.3s;
+}
+
+[data-theme="dark"] .glass-card input {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.glass-card input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ffeb3b;
+}
+
+/* Custom Buttons for Travel/Compare */
+.action-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.action-btn.blue { background: #3498db; color: white; }
+.action-btn.orange { background: #ff9800; color: white; }
+
+.action-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+/* Layout for the input groups */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
